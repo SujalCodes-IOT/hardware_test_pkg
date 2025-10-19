@@ -24,7 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'test_publisher = hardware_test_pkg.test_publisher:main',
+            'servo_publisher= hardware_test_pkg.servo_publisher:main',
         ],
     },
 )
