@@ -15,29 +15,27 @@ class ServoPublisher(Node):
     def __init__(self):
         super().__init__('servo_publisher')
         self.publisher_ = self.create_publisher(Int32, 'servo_angle', 10)
-        self.timer = self.create_timer(1.0, self.timer_callback)
-        self.angle = 0
-        self.direction = 1
+        self.timer = self.create_timer(2.0, self.timer_callback)
+        self.angles = [0, 90, 180, 90]  # Sequence
+        self.index = 0
 
     def timer_callback(self):
-        # Sweep servo back and forth
-        self.angle += 10 * self.direction
-        if self.angle >= 180:
-            self.angle = 180
-            self.direction = -1
-        elif self.angle <= 0:
-            self.angle = 0
-            self.direction = 1
+        angle = self.angles[self.index]
+        self.index = (self.index + 1) % len(self.angles)
 
         # Publish ROS 2 message
         msg = Int32()
-        msg.data = self.angle
+        msg.data = angle
         self.publisher_.publish(msg)
-        self.get_logger().info(f'Publishing angle: {self.angle}')
+        self.get_logger().info(f"Rotating servo to: {angle}°")
 
-        # Software PWM for servo using gpiod
+        # Generate PWM pulse for servo
+        for _ in range(50):  # Run ~1 second of 50 Hz PWM
+            self.set_servo_angle(angle)
+
+    def set_servo_angle(self, angle):
         period = 0.02  # 20 ms period (50 Hz)
-        high_time = 0.001 + (self.angle / 180.0) * 0.002  # 1–3 ms pulse
+        high_time = 0.001 + (angle / 180.0) * 0.001  # 1–2 ms pulse width
         line.set_value(1)
         time.sleep(high_time)
         line.set_value(0)
@@ -51,7 +49,6 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        # Release GPIO line and shutdown
         line.release()
         node.destroy_node()
         rclpy.shutdown()
