@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'servo_publisher= hardware_test_pkg.servo_publisher:main',
+            'servo_controller = hardware_test_pkg.servo_controller:main',
         ],
     },
 )
