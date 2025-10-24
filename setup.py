@@ -26,8 +26,6 @@ setup(
         'console_scripts': [
             # Pi side node (servo subscriber)
             'servo_subscriber = hardware_test_pkg.servo_subscriber:main',
-            # Laptop side node (controller / publisher)
-            'servo_controller = hardware_test_pkg.servo_controller:main',
         ],
     },
 )
