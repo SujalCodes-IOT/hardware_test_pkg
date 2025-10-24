@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='sujalu',
     maintainer_email='sujaldhote82@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Hardware test package for Raspberry Pi + ROS2 integration',
+    license='MIT',
     extras_require={
         'test': [
             'pytest',
@@ -24,7 +24,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'servo_publisher= hardware_test_pkg.servo_publisher:main',
+            # Pi side node (servo subscriber)
+            'servo_subscriber = hardware_test_pkg.servo_subscriber:main',
+            # Laptop side node (controller / publisher)
             'servo_controller = hardware_test_pkg.servo_controller:main',
         ],
     },
